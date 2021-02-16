@@ -65,7 +65,7 @@ messages
 @#
 @# now prune using the commandline
 @#
-@sleep 6
+@sleep 10
 prune volume=TestVolume001 yes
 messages
 quit
