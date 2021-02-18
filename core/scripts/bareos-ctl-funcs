@@ -86,16 +86,19 @@ killproc() {
                fi
             fi
          fi
-         ${PS} -p "$pid" >/dev/null 2>&1
-         RC=$?
-         [ $RC -eq 0 ] && failure "$base shutdown" || success "$base shutdown"
-         #    RC=$((! $RC))
-         # use specified level only
+         sleep 1
+         if ${PS} -p "$pid" >/dev/null 2>&1; then
+            success "$base shutdown"
+         else
+            failure "$base shutdown"
+         fi
       else
          if ${PS} -p "$pid" >/dev/null 2>&1; then
-            kill $killlevel $pid 2>/dev/null
-            RC=$?
-            [ $RC -eq 0 ] && success "$base $killlevel" || failure "$base $killlevel"
+            if kill $killlevel $pid 2>/dev/null; then
+                success "$base shutdown"
+            else
+                failure "$base shutdown"
+            fi
          fi
       fi
    else
@@ -180,10 +183,12 @@ status() {
 }
 
 success() {
+   echo "${1:-} succeeded"
    return 0
 }
 
 failure() {
    rc=$?
+   echo "${1:-} failed (rc=$rc)"
    return $rc
 }
