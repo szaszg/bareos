@@ -3,7 +3,7 @@
 
    Copyright (C) 2000-2012 Free Software Foundation Europe e.V.
    Copyright (C) 2011-2012 Planets Communications B.V.
-   Copyright (C) 2013-2020 Bareos GmbH & Co. KG
+   Copyright (C) 2013-2021 Bareos GmbH & Co. KG
 
    This program is Free Software; you can redistribute it and/or
    modify it under the terms of version three of the GNU Affero General Public
@@ -141,7 +141,7 @@ const char* Device::mode_to_str(DeviceMode mode)
 /**
  * Fabric to allocate and initialize the Device structure
  *
- * Note, for a tape, the device->device_name is the device name
+ * Note, for a tape, the device->archive_device is the device name
  * (e.g. /dev/nst0), and for a file, the device name
  * is the directory in which the file will be placed.
  */
@@ -160,10 +160,10 @@ Device* FactoryCreateDevice(JobControlRecord* jcr,
     /*
      * Check that device is available
      */
-    if (stat(device_resource->device_name, &statp) < 0) {
+    if (stat(device_resource->archive_device, &statp) < 0) {
       BErrNo be;
       Jmsg2(jcr, M_ERROR, 0, _("Unable to stat device %s: ERR=%s\n"),
-            device_resource->device_name, be.bstrerror());
+            device_resource->archive_device, be.bstrerror());
       return nullptr;
     }
     if (S_ISDIR(statp.st_mode)) {
@@ -176,7 +176,7 @@ Device* FactoryCreateDevice(JobControlRecord* jcr,
       Jmsg2(jcr, M_ERROR, 0,
             _("%s is an unknown device type. Must be tape or directory, "
               "st_mode=%04o\n"),
-            device_resource->device_name, (statp.st_mode & ~S_IFMT));
+            device_resource->archive_device, (statp.st_mode & ~S_IFMT));
       return nullptr;
     }
   }
@@ -243,7 +243,7 @@ Device* FactoryCreateDevice(JobControlRecord* jcr,
 
   if (!dev) {
     Jmsg2(jcr, M_ERROR, 0, _("%s has an unknown device type %d\n"),
-          device_resource->device_name, device_resource->dev_type);
+          device_resource->archive_device, device_resource->dev_type);
     return nullptr;
   }
   dev->InvalidateSlotNumber(); /* unknown */
@@ -251,18 +251,18 @@ Device* FactoryCreateDevice(JobControlRecord* jcr,
   /*
    * Copy user supplied device parameters from Resource
    */
-  dev->dev_name = GetMemory(strlen(device_resource->device_name) + 1);
-  PmStrcpy(dev->dev_name, device_resource->device_name);
+  dev->archive_device = GetMemory(strlen(device_resource->archive_device) + 1);
+  PmStrcpy(dev->archive_device, device_resource->archive_device);
   if (device_resource->device_options) {
     dev->dev_options = GetMemory(strlen(device_resource->device_options) + 1);
     PmStrcpy(dev->dev_options, device_resource->device_options);
   }
-  dev->prt_name = GetMemory(strlen(device_resource->device_name)
+  dev->prt_name = GetMemory(strlen(device_resource->archive_device)
                             + strlen(device_resource->resource_name_) + 20);
 
 
   Mmsg(dev->prt_name, "\"%s\" (%s)", device_resource->resource_name_,
-       device_resource->device_name);
+       device_resource->archive_device);
   Dmsg1(400, "Allocate dev=%s\n", dev->print_name());
   CopySetBits(CAP_MAX, device_resource->cap_bits, dev->capabilities);
 
@@ -393,10 +393,10 @@ Device* FactoryCreateDevice(JobControlRecord* jcr,
 
   dev->ClearOpened();
   dev->attached_dcrs.clear();
-  Dmsg2(100, "FactoryCreateDevice: tape=%d dev_name=%s\n", dev->IsTape(),
-        dev->dev_name);
+  Dmsg2(100, "FactoryCreateDevice: tape=%d archive_device=%s\n", dev->IsTape(),
+        dev->archive_device);
   dev->initiated = true;
-  Dmsg3(100, "dev=%s dev_max_bs=%u max_bs=%u\n", dev->dev_name,
+  Dmsg3(100, "dev=%s dev_max_bs=%u max_bs=%u\n", dev->archive_device,
         dev->device_resource->max_block_size, dev->max_block_size);
 
   return dev;
@@ -615,7 +615,7 @@ bool Device::open(DeviceControlRecord* dcr, DeviceMode omode)
     VolCatInfo = dcr->VolCatInfo; /* structure assign */
   }
 
-  Dmsg4(100, "open dev: type=%d dev_name=%s vol=%s mode=%s\n", dev_type,
+  Dmsg4(100, "open dev: type=%d archive_device=%s vol=%s mode=%s\n", dev_type,
         print_name(), getVolCatName(), mode_to_str(omode));
 
   ClearBit(ST_LABEL, state);
@@ -680,7 +680,7 @@ void Device::OpenDevice(DeviceControlRecord* dcr, DeviceMode omode)
   /*
    * Handle opening of File Archive (not a tape)
    */
-  PmStrcpy(archive_name, dev_name);
+  PmStrcpy(archive_name, archive_device);
 
   /*
    * If this is a virtual autochanger (i.e. changer_res != NULL) we simply use
@@ -1156,7 +1156,7 @@ void Device::EditMountCodes(PoolMem& omsg, const char* imsg)
           str = "%";
           break;
         case 'a':
-          str = dev_name;
+          str = archive_device;
           break;
         case 'm':
           str = device_resource->mount_point;
@@ -1256,9 +1256,9 @@ Device::~Device()
    */
   close(nullptr);
 
-  if (dev_name) {
-    FreeMemory(dev_name);
-    dev_name = nullptr;
+  if (archive_device) {
+    FreeMemory(archive_device);
+    archive_device = nullptr;
   }
   if (dev_options) {
     FreeMemory(dev_options);
