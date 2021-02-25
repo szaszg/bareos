@@ -3,7 +3,7 @@
 
    Copyright (C) 2002-2011 Free Software Foundation Europe e.V.
    Copyright (C) 2011-2012 Planets Communications B.V.
-   Copyright (C) 2013-2020 Bareos GmbH & Co. KG
+   Copyright (C) 2013-2021 Bareos GmbH & Co. KG
 
    This program is Free Software; you can redistribute it and/or
    modify it under the terms of version three of the GNU Affero General Public
@@ -244,7 +244,8 @@ static bool GetModifier(char* str,
 
   if (!Is_a_number(num)) { return false; }
 
-  bstrncpy(str, &str[mod_end], len);
+  std::string tmp(&str[mod_end]);
+  bstrncpy(str, tmp.c_str(), len);
   Dmsg2(900, "num=%s mod=%s\n", num, mod);
 
   return true;
