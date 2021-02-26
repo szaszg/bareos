@@ -634,7 +634,7 @@ static inline bool DevGetOsPos(Device* dev, struct mtget* mt_stat)
 {
   Dmsg0(100, "DevGetOsPos\n");
   return dev->HasCap(CAP_MTIOCGET)
-         && dev->d_ioctl(dev->fd(), MTIOCGET, (char*)mt_stat) == 0
+         && dev->d_ioctl(dev->fd_, MTIOCGET, (char*)mt_stat) == 0
          && mt_stat->mt_fileno >= 0;
 }
 
@@ -808,7 +808,7 @@ void generic_tape_device::UnlockDoor()
  */
 static inline void OsClrerror(Device* dev)
 {
-  if (dev->d_ioctl(dev->fd(), MTIOCLRERR) < 0) { dev->clrerror(MTIOCLRERR); }
+  if (dev->d_ioctl(dev->fd_, MTIOCLRERR) < 0) { dev->clrerror(MTIOCLRERR); }
   Dmsg0(200, "Did MTIOCLRERR\n");
 }
 #elif defined(MTIOCERRSTAT)
@@ -825,7 +825,7 @@ static inline void OsClrerror(Device* dev)
    */
   Dmsg2(200, "Doing MTIOCERRSTAT errno=%d ERR=%s\n", dev->dev_errno,
         be.bstrerror(dev->dev_errno));
-  if (dev->d_ioctl(dev->fd(), MTIOCERRSTAT, (char*)&mt_errstat) < 0) {
+  if (dev->d_ioctl(dev->fd_, MTIOCERRSTAT, (char*)&mt_errstat) < 0) {
     dev->clrerror(MTIOCERRSTAT);
   }
 }
@@ -842,7 +842,7 @@ static inline void OsClrerror(Device* dev)
    */
   mt_com.mt_op = MTCSE;
   mt_com.mt_count = 1;
-  if (dev->d_ioctl(dev->fd(), MTIOCTOP, (char*)&mt_com) < 0) {
+  if (dev->d_ioctl(dev->fd_, MTIOCTOP, (char*)&mt_com) < 0) {
     dev->clrerror(mt_com.mt_op);
   }
   Dmsg0(200, "Did MTCSE\n");
@@ -1001,7 +1001,7 @@ void generic_tape_device::SetOsDeviceParameters(DeviceControlRecord* dcr)
     mt_com.mt_op = MTSETBLK;
     mt_com.mt_count = 0;
     Dmsg0(100, "Set block size to zero\n");
-    if (dev->d_ioctl(dev->fd(), MTIOCTOP, (char*)&mt_com) < 0) {
+    if (dev->d_ioctl(dev->fd_, MTIOCTOP, (char*)&mt_com) < 0) {
       dev->clrerror(mt_com.mt_op);
     }
   }
@@ -1013,7 +1013,7 @@ void generic_tape_device::SetOsDeviceParameters(DeviceControlRecord* dcr)
     if (!dev->HasCap(CAP_TWOEOF)) { mt_com.mt_count |= MT_ST_TWO_FM; }
     if (dev->HasCap(CAP_EOM)) { mt_com.mt_count |= MT_ST_FAST_MTEOM; }
     Dmsg0(100, "MTSETDRVBUFFER\n");
-    if (dev->d_ioctl(dev->fd(), MTIOCTOP, (char*)&mt_com) < 0) {
+    if (dev->d_ioctl(dev->fd_, MTIOCTOP, (char*)&mt_com) < 0) {
       dev->clrerror(mt_com.mt_op);
     }
   }
@@ -1027,13 +1027,13 @@ void generic_tape_device::SetOsDeviceParameters(DeviceControlRecord* dcr)
       && dev->min_block_size == 0) { /* variable block mode */
     mt_com.mt_op = MTSETBSIZ;
     mt_com.mt_count = 0;
-    if (dev->d_ioctl(dev->fd(), MTIOCTOP, (char*)&mt_com) < 0) {
+    if (dev->d_ioctl(dev->fd_, MTIOCTOP, (char*)&mt_com) < 0) {
       dev->clrerror(mt_com.mt_op);
     }
     /* Get notified at logical end of tape */
     mt_com.mt_op = MTEWARN;
     mt_com.mt_count = 1;
-    if (dev->d_ioctl(dev->fd(), MTIOCTOP, (char*)&mt_com) < 0) {
+    if (dev->d_ioctl(dev->fd_, MTIOCTOP, (char*)&mt_com) < 0) {
       dev->clrerror(mt_com.mt_op);
     }
   }
@@ -1046,7 +1046,7 @@ void generic_tape_device::SetOsDeviceParameters(DeviceControlRecord* dcr)
       && dev->min_block_size == 0) { /* variable block mode */
     mt_com.mt_op = MTSETBSIZ;
     mt_com.mt_count = 0;
-    if (dev->d_ioctl(dev->fd(), MTIOCTOP, (char*)&mt_com) < 0) {
+    if (dev->d_ioctl(dev->fd_, MTIOCTOP, (char*)&mt_com) < 0) {
       dev->clrerror(mt_com.mt_op);
     }
   }
@@ -1057,7 +1057,7 @@ void generic_tape_device::SetOsDeviceParameters(DeviceControlRecord* dcr)
   } else {
     neof = 1;
   }
-  if (dev->d_ioctl(dev->fd(), MTIOCSETEOTMODEL, (caddr_t)&neof) < 0) {
+  if (dev->d_ioctl(dev->fd_, MTIOCSETEOTMODEL, (caddr_t)&neof) < 0) {
     BErrNo be;
     dev->dev_errno = errno; /* save errno */
     Mmsg2(dev->errmsg, _("Unable to set eotmodel on device %s: ERR=%s\n"),
@@ -1074,7 +1074,7 @@ void generic_tape_device::SetOsDeviceParameters(DeviceControlRecord* dcr)
       && dev->min_block_size == 0) { /* variable block mode */
     mt_com.mt_op = MTSRSZ;
     mt_com.mt_count = 0;
-    if (dev->d_ioctl(dev->fd(), MTIOCTOP, (char*)&mt_com) < 0) {
+    if (dev->d_ioctl(dev->fd_, MTIOCTOP, (char*)&mt_com) < 0) {
       dev->clrerror(mt_com.mt_op);
     }
   }

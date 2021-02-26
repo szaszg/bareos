@@ -212,8 +212,6 @@ enum
 /* clang-format off */
 
 class Device {
- protected:
-  int fd_{-1};           /**< File descriptor */
  private:
   int blocked_{};        /**< Set if we must wait (i.e. change tape) */
   int count_{};          /**< Mutex use count -- DEBUG only */
@@ -277,6 +275,7 @@ class Device {
   DeviceResource* device_resource{};   /**< Pointer to Device Resource */
   VolumeReservationItem* vol{};        /**< Pointer to Volume reservation item */
   btimer_t* tid{};            /**< Timer id */
+  int fd_{-1};                /**< File descriptor */
 
   VolumeCatalogInfo VolCatInfo;       /**< Volume Catalog Information */
   Volume_Label VolHdr;                /**< Actual volume label */
@@ -434,7 +433,6 @@ class Device {
 
   uint32_t GetFile() const { return file; }
   uint32_t GetBlockNum() const { return block_num; }
-  int fd() const { return fd_; }
 
   /*
    * Tape specific operations.
