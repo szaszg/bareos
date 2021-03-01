@@ -560,7 +560,7 @@ could not hard link
    When restoring a file that is a hard link reference, Bareos expects the original file to
    be present.
 
-   The workaround for this error is to include the original file in the restore fileset,
+   The workaround for this error is to include the original file in the restore FileSet,
    and delete it again after the restore is completed.
 
    Note that in the filesystem, there is no distinction between the "original" hard linked file
@@ -569,8 +569,8 @@ could not hard link
    others become "references". To restore a file which has been backed up as a reference,
    the original file must be present in the filesystem, or it must be restored in the same job.
 
-   This special behaviour of storing hard links can be turned off in the Fileset
-   resource ("Hard Links = Yes|No").
+   This special behaviour of storing hard links can be turned off in the FileSet
+   resource :config:option:`dir/fileset/include/options/HardLinks = no`
    In this case, all files with hard links are backed up separately, and can be restored separately.
    Please note that this can increase the size of the backup job. After a restore,
    all files that might have been hard links will be separate files, taking up more disk space.
