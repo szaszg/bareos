@@ -623,8 +623,6 @@ else()
 endif()
 
 if(AUTOCHANGER_DEVICES_FOUND)
-  find_program(MT mt)
-  find_program(MTX mtx)
   if(MT AND MTX)
     set(AUTOCHANGER_TEST_ENABLED TRUE)
   else()

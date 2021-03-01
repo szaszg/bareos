@@ -33,6 +33,7 @@ find_program(PS ps)
 find_program(PGREP pgrep)
 find_program(RPCGEN rpcgen)
 find_program(MTX mtx)
+find_program(MT mt)
 
 find_program(GCORE gcore)
 find_program(GDB gdb)
