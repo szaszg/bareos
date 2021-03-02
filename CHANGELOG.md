@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and since Bareos version 20 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [20.0.1] - 2020-xx-xx
+## [Unreleased]
+
+## [20.0.1] - 2020-03-02
 
 ### Fixed
 - fix parallel python plugin jobs [PR #732]
@@ -11,7 +13,6 @@ and since Bareos version 20 this project adheres to [Semantic Versioning](https:
 - fix crash when loading both python-fd and python3-fd plugins [PR #733]
 - [Issue #1316]: storage daemon loses a configured device instance [PR #734]
 - fix python-bareos for Python < 2.7.13 [PR #753]
-
 
 ### Added
 - py2lug-fd-ovirt systemtest: use ovirt-plugin.ini config file [PR #732]
@@ -21,12 +22,6 @@ and since Bareos version 20 this project adheres to [Semantic Versioning](https:
 ### Changed
 - Fixed broken link in https://docs.bareos.org/IntroductionAndTutorial/WhatIsBareos.html documentation page
 - Ctest now runs in scripted mode. [PR #751]
-
-### Deprecated
-
-### Removed
-
-### Security
 
 ## [20.0.0] - 2020-12-16
 
@@ -169,6 +164,7 @@ and since Bareos version 20 this project adheres to [Semantic Versioning](https:
 
 
 [20.0.0]: https://github.com/bareos/bareos/releases/tag/Release%2F20.0.0
+[20.0.1]: https://github.com/bareos/bareos/releases/tag/Release%2F20.0.1
 [Issue #1039]: https://bugs.bareos.org/view.php?id=1039
 [Issue #1174]: https://bugs.bareos.org/view.php?id=1174
 [Issue #1175]: https://bugs.bareos.org/view.php?id=1175
@@ -184,6 +180,7 @@ and since Bareos version 20 this project adheres to [Semantic Versioning](https:
 [Issue #1246]: https://bugs.bareos.org/view.php?id=1246
 [Issue #1257]: https://bugs.bareos.org/view.php?id=1257
 [Issue #1281]: https://bugs.bareos.org/view.php?id=1281
+[Issue #1316]: https://bugs.bareos.org/view.php?id=1316
 [PR #383]: https://github.com/bareos/bareos/pull/383
 [PR #384]: https://github.com/bareos/bareos/pull/384
 [PR #385]: https://github.com/bareos/bareos/pull/385
@@ -296,4 +293,11 @@ and since Bareos version 20 this project adheres to [Semantic Versioning](https:
 [PR #667]: https://github.com/bareos/bareos/pull/667
 [PR #672]: https://github.com/bareos/bareos/pull/672
 [PR #686]: https://github.com/bareos/bareos/pull/686
+[PR #732]: https://github.com/bareos/bareos/pull/732
+[PR #733]: https://github.com/bareos/bareos/pull/733
+[PR #734]: https://github.com/bareos/bareos/pull/734
+[PR #745]: https://github.com/bareos/bareos/pull/745
+[PR #746]: https://github.com/bareos/bareos/pull/746
+[PR #751]: https://github.com/bareos/bareos/pull/751
+[PR #753]: https://github.com/bareos/bareos/pull/753
 [unreleased]: https://github.com/bareos/bareos/tree/master
